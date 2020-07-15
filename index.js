@@ -1,8 +1,6 @@
 /* TODO:
- - implement Express boilerplate for routing
- - add a route to generate access token
- - add a route for the patient view
  - add express boilerplate to serve front end
+ - add a route for the patient view
  - add html page that points to route for patient view
  - add html form to join a video conference
  - implement clicking a button and changing the page state so that it says you're in a waiting room
@@ -18,7 +16,41 @@ const http = require("http");
 const express = require("express");
 const app = express();
 
-app.get("/", (req, res) => res.send("Hello World!"));
+const twilio = require("twilio");
+const client = twilio();
+const AccessToken = require("twilio").jwt.AccessToken;
+const VideoGrant = AccessToken.VideoGrant;
+
+// Max. period that a Participant is allowed to be in a Room (currently 14400 seconds or 4 hours)
+// TODO: is this strictly necessary?
+const MAX_ALLOWED_SESSION_DURATION = 14400;
+
+app.get("/token", function (request, response) {
+  const identity = request.query.identity || "tilde";
+
+  // Create an access token which we will sign and return to the client,
+  // containing the grant we just created.
+
+  const token = new AccessToken(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_API_KEY,
+    process.env.TWILIO_API_SECRET,
+    { ttl: MAX_ALLOWED_SESSION_DURATION }
+  );
+
+  // Assign the generated identity to the token.
+  token.identity = identity;
+
+  // Grant the access token Twilio Video capabilities.
+  const grant = new VideoGrant();
+  token.addGrant(grant);
+
+  // Serialize the token to a JWT string and include it in a JSON response.
+  response.send({
+    identity: identity,
+    token: token.toJwt(),
+  });
+});
 
 http.createServer(app).listen(1337, () => {
   console.log("express server listening on port 1337");
