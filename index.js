@@ -13,3 +13,13 @@
  - add html form to join the video conference
  - fire off some sort of event when the provider joins, so that we can also join the patient
 */
+
+const http = require("http");
+const express = require("express");
+const app = express();
+
+app.get("/", (req, res) => res.send("Hello World!"));
+
+http.createServer(app).listen(1337, () => {
+  console.log("express server listening on port 1337");
+});
