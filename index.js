@@ -14,6 +14,7 @@
 
 const http = require("http");
 const express = require("express");
+const path = require("path");
 const app = express();
 
 const twilio = require("twilio");
@@ -24,6 +25,10 @@ const VideoGrant = AccessToken.VideoGrant;
 // Max. period that a Participant is allowed to be in a Room (currently 14400 seconds or 4 hours)
 // TODO: is this strictly necessary?
 const MAX_ALLOWED_SESSION_DURATION = 14400;
+
+const patientPath = path.join(__dirname, "./public/patient.html");
+console.log("patientPath", patientPath);
+app.use("/patient", express.static(patientPath));
 
 app.get("/token", function (request, response) {
   const identity = request.query.identity || "tilde";
