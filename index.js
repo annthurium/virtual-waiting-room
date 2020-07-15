@@ -1,7 +1,4 @@
 /* TODO:
- - add express boilerplate to serve front end
- - add a route for the patient view
- - add html page that points to route for patient view
  - add html form to join a video conference
  - implement clicking a button and changing the page state so that it says you're in a waiting room
  - add some css? So that it doesn't look jank?
