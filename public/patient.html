@@ -7,11 +7,13 @@
   <body>
     <h1>Welcome to Owl Hospital Telemedicine</h1>
   </body>
-  <div></div>
-    <div id="remote-media"></div>
-            <label for="user-name">Name: </label>
-            <input id="user-name" name="user-name" type="text">
-</input>
-            <button id="button-join">Join Room</button>
-</div>
+  <div>
+    <div id="join-form" class="join-form"></div>
+    <label for="user-name">Name: </label>
+    <input id="user-name" name="user-name" type="text"></input>
+    <button id="button-join">Join Room</button>
+  </div>
+  <div id="waiting-room" class="hidden">
+      <p> Thanks! Your provider will be with you shortly.</p>
+  </div>
 </html>

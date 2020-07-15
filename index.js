@@ -1,5 +1,4 @@
 /* TODO:
- - add html form to join a video conference
  - implement clicking a button and changing the page state so that it says you're in a waiting room
  - add some css? So that it doesn't look jank?
 
@@ -7,6 +6,7 @@
  - add html page for the provider view
  - add html form to join the video conference
  - fire off some sort of event when the provider joins, so that we can also join the patient
+ - maybe using status callbacks? https://www.twilio.com/docs/video/api/status-callbacks#rooms-callback-events
 */
 
 const http = require("http");
@@ -26,6 +26,8 @@ const MAX_ALLOWED_SESSION_DURATION = 14400;
 const patientPath = path.join(__dirname, "./public/patient.html");
 console.log("patientPath", patientPath);
 app.use("/patient", express.static(patientPath));
+
+app.use(express.static(__dirname + "/public"));
 
 app.get("/token", function (request, response) {
   const identity = request.query.identity || "tilde";
