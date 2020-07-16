@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Owl Hospital Telemedicine App</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+
+  <body>
+    <!-- do I even want this? IDK -->
+    <h1>Welcome, Dr. Jareth</h1>
+  </body>
+  <div id="join-form">
+    <!-- <label for="user-name">Name: </label>
+    <input id="user-name" name="user-name" type="text"></input> -->
+    <button id="join-button">Join Room</button>
+  </div>
+  <div id="waiting-room" class="hidden">
+    <p>Thanks! Your provider will be with you shortly.</p>
+  </div>
+  <script>
+    function onClick(event) {
+      const joinForm = document.getElementById("join-form");
+      joinForm.classList.toggle("hidden");
+
+      const waitingRoom = document.getElementById("waiting-room");
+      waitingRoom.classList.toggle("hidden");
+      event.preventDefault();
+    }
+
+    const button = document.getElementById("join-button");
+    button.addEventListener("click", onClick);
+  </script>
+</html>

@@ -21,8 +21,10 @@ const VideoGrant = AccessToken.VideoGrant;
 const MAX_ALLOWED_SESSION_DURATION = 14400;
 
 const patientPath = path.join(__dirname, "./public/patient.html");
-console.log("patientPath", patientPath);
 app.use("/patient", express.static(patientPath));
+
+const providerPath = path.join(__dirname, "./public/provider.html");
+app.use("/provider", express.static(providerPath));
 
 app.use(express.static(__dirname + "/public"));
 
