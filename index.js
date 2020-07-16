@@ -1,7 +1,4 @@
 /* TODO:
- - implement clicking a button and changing the page state so that it says you're in a waiting room
- - add some css? So that it doesn't look jank?
-
  - add a route for the provider view
  - add html page for the provider view
  - add html form to join the video conference
