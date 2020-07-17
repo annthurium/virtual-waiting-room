@@ -47,6 +47,7 @@ app.get("/token", function (request, response) {
   // Grant the access token Twilio Video capabilities.
   const grant = new VideoGrant();
   token.addGrant(grant);
+  console.log("token!!", token);
 
   // Serialize the token to a JWT string and include it in a JSON response.
   response.send({

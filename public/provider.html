@@ -14,16 +14,76 @@
     <input id="user-name" name="user-name" type="text"></input> -->
     <button id="join-button">Join Room</button>
   </div>
-  <div id="waiting-room" class="hidden">
-    <p>Thanks! Your provider will be with you shortly.</p>
-  </div>
+  <!-- do I need this??? why do I need video element and media element? -->
+  <video id="video" autoplay muted="true" width="320" height="240"></video>
+  <div id="wtf"></div>
+  <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
   <script>
-    function onClick(event) {
-      const joinForm = document.getElementById("join-form");
-      joinForm.classList.toggle("hidden");
+    // when a participant joins, add their audio and video to the DOM
 
-      const waitingRoom = document.getElementById("waiting-room");
-      waitingRoom.classList.toggle("hidden");
+    const trackSubscribed = (div, track) => {
+      div.appendChild(track.attach());
+    };
+    const onParticipantConnected = (participant) => {
+      console.log("is it even happening");
+      const participantDiv = document.createElement("div");
+      participantDiv.id = participant.sid;
+      //   const mediaDiv = document.getElementById("media");
+
+      const title = document.createElement("h6");
+      title.appendChild(document.createTextNode(participant.identity));
+      participantDiv.appendChild(title);
+
+      participant.on("trackSubscribed", function (track) {
+        participantDiv.appendChild(track.attach());
+      });
+
+      participant.tracks.forEach((publication) => {
+        if (publication.isSubscribed) {
+          trackSubscribed(div, publication.track);
+        }
+      });
+      //   participantDiv.appendChild(mediaDiv);
+      const mediaContainer = document.getElementById("video");
+      mediaContainer.appendChild(participantDiv);
+      //   document.body.appendChild(participantDiv);
+    };
+
+    // when a participant connects, remove their video and audio from the DOM.
+    function participantDisconnected(participant) {
+      const participantDiv = document.getElementById(participant.sid);
+      participantDiv.parentNode.removeChild(participantDiv);
+    }
+    async function onClick(event) {
+      // do I need to worry about browser compat with "await"? bleh
+      // or at least wrap this in a try catch
+      const response = await fetch("/token?identity=jareth");
+      const jsonResponse = await response.json();
+      const token = jsonResponse.token;
+
+      const Video = Twilio.Video;
+
+      const room = await Video.connect(token, {
+        name: "telemedicineAppointment",
+      });
+
+      // display your own video element in DOM
+      // localParticipants are handled differently - you don't need to fetch your own video stream from the server
+      const localTracks = await Video.createLocalTracks();
+      const mediaContainer = document.getElementById("wtf");
+      localTracks.forEach(function (track) {
+        mediaContainer.appendChild(track.attach());
+      });
+
+      // display video/audio of other participants who have already joined
+      room.participants.forEach(onParticipantConnected);
+
+      // subscribe to new participant joining event so we can display their video/audio
+      room.on("participantConnected", onParticipantConnected);
+
+      // add ability to disconnect
+      // deal with button states
+      // remove the join form, just made it a damn button
       event.preventDefault();
     }
 
