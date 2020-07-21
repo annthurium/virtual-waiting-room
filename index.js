@@ -1,9 +1,8 @@
 /* TODO:
- - add a route for the provider view
- - add html page for the provider view
- - add html form to join the video conference
+ - make it so that provider can join the video conference
  - fire off some sort of event when the provider joins, so that we can also join the patient
  - maybe using status callbacks? https://www.twilio.com/docs/video/api/status-callbacks#rooms-callback-events
+ - implement some sort of soothing "waiting" experience
 */
 
 const http = require("http");
@@ -45,9 +44,9 @@ app.get("/token", function (request, response) {
   token.identity = identity;
 
   // Grant the access token Twilio Video capabilities.
-  const grant = new VideoGrant();
+  // TODO: make this a const and import it?
+  const grant = new VideoGrant({ room: "telemedicineAppointment" });
   token.addGrant(grant);
-  console.log("token!!", token);
 
   // Serialize the token to a JWT string and include it in a JSON response.
   response.send({
