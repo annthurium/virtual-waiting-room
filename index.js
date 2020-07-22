@@ -3,6 +3,8 @@
  - fire off some sort of event when the provider joins, so that we can also join the patient
  - maybe using status callbacks? https://www.twilio.com/docs/video/api/status-callbacks#rooms-callback-events
  - implement some sort of soothing "waiting" experience
+ - explore that templating API in vanilla JS to avoid duplicating HTML
+ - clean up JS so that you're using consistent APIs for defining functions etc
 */
 
 const http = require("http");

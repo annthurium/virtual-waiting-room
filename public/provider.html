@@ -15,17 +15,14 @@
     <button id="join-button">Join Room</button>
     <button id="leave-button" class="hidden">Leave Room</button>
   </div>
-  <!-- do I need this??? look into whether a video element is better than a plain ol' div.-->
-  <video id="video" autoplay muted="true" width="320" height="240"></video>
-  <div id="wtf"></div>
-  <div id="media"></div>
+  <div id="local-media-container"></div>
+  <div id="media-container"></div>
   <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
   <script>
     let room;
     const onParticipantConnected = (participant) => {
       const participantDiv = document.createElement("div");
       participantDiv.id = participant.sid;
-      const mediaDiv = document.getElementById("media");
 
       const title = document.createElement("h6");
       title.appendChild(document.createTextNode(participant.identity));
@@ -44,9 +41,7 @@
         }
       });
 
-      participantDiv.appendChild(mediaDiv);
-      const mediaContainer = document.getElementById("video");
-      mediaContainer.appendChild(participantDiv);
+      const mediaContainer = document.getElementById("media-container");
       document.body.appendChild(participantDiv);
 
       const trackUnsubscribed = (track) => {
@@ -79,11 +74,12 @@
       // display your own video element in DOM
       // localParticipants are handled differently
       // you don't need to fetch your own video/audio streams from the server
-      const localTracks = await Video.createLocalTracks();
-      const mediaContainer = document.getElementById("wtf");
-      localTracks.forEach(function (track) {
-        mediaContainer.appendChild(track.attach());
-      });
+      const localTrack = await Video.createLocalVideoTrack();
+      // room.localParticipant.publishTrack(localTrack);
+      const localMediaContainer = document.getElementById(
+        "local-media-container"
+      );
+      localMediaContainer.appendChild(localTrack.attach());
 
       // display video/audio of other participants who have already joined
       room.participants.forEach(onParticipantConnected);
@@ -93,17 +89,32 @@
 
       room.on("participantDisconnected", onParticipantDisconnected);
 
+      // maybe make this a helper function?
       event.target.classList.toggle("hidden");
       document.getElementById("leave-button").classList.toggle("hidden");
 
       // TODO:
       // make the audio not be terrible
+      // show the participant ID in a sensible way
       // stop showing local audio and video if you disconnect
       // remove the join form, just made it a damn button
+      // add a button for previewing your audio and video?
       event.preventDefault();
     }
 
     function onLeaveButtonClick(event) {
+      console.log("room", room);
+      room.localParticipant.tracks.forEach((track) => {
+        console.log(track);
+        // whyyyy is this throwing an error?
+        // I'm confused about the difference between `publish` and `attach`.
+        // `publish` lets remote participants subscribe to a track.
+        // but what does `attach` do? especially since you need to append it into the dom anyway.
+        // also, are you still supposed to show the local preview after you've joined the room?
+        // or is there some other way of showing you your own video?
+        const attachedElements = track.detach();
+        attachedElements.forEach((element) => element.remove());
+      });
       room.disconnect();
 
       event.target.classList.toggle("hidden");
