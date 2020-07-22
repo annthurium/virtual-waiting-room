@@ -13,7 +13,7 @@
     <!-- <label for="user-name">Name: </label>
     <input id="user-name" name="user-name" type="text"></input> -->
     <button id="join-button">Join Room</button>
-    <button id="leave-button">Leave Room</button>
+    <button id="leave-button" class="hidden">Leave Room</button>
   </div>
   <!-- do I need this??? look into whether a video element is better than a plain ol' div.-->
   <video id="video" autoplay muted="true" width="320" height="240"></video>
@@ -93,17 +93,22 @@
 
       room.on("participantDisconnected", onParticipantDisconnected);
 
+      event.target.classList.toggle("hidden");
+      document.getElementById("leave-button").classList.toggle("hidden");
+
       // TODO:
       // make the audio not be terrible
-      // deal with button states
+      // stop showing local audio and video if you disconnect
       // remove the join form, just made it a damn button
       event.preventDefault();
     }
 
     function onLeaveButtonClick(event) {
       room.disconnect();
+
+      event.target.classList.toggle("hidden");
       const joinButton = document.getElementById("join-button");
-      // joinButton.classList.toggle('hidden');
+      joinButton.classList.toggle("hidden");
     }
 
     const joinButton = document.getElementById("join-button");
