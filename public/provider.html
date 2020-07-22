@@ -13,6 +13,7 @@
     <!-- <label for="user-name">Name: </label>
     <input id="user-name" name="user-name" type="text"></input> -->
     <button id="join-button">Join Room</button>
+    <button id="leave-button">Leave Room</button>
   </div>
   <!-- do I need this??? look into whether a video element is better than a plain ol' div.-->
   <video id="video" autoplay muted="true" width="320" height="240"></video>
@@ -20,14 +21,8 @@
   <div id="media"></div>
   <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
   <script>
-    // when a participant joins, add their audio and video to the DOM
-    const trackSubscribed = (div, track) => {
-      div.appendChild(track.attach());
-    };
-    // this function is never called!
-    // what is wrong?
+    let room;
     const onParticipantConnected = (participant) => {
-      console.log("is it even happening");
       const participantDiv = document.createElement("div");
       participantDiv.id = participant.sid;
       const mediaDiv = document.getElementById("media");
@@ -36,27 +31,38 @@
       title.appendChild(document.createTextNode(participant.identity));
       participantDiv.appendChild(title);
 
-      participant.on("trackSubscribed", function (track) {
+      // when a participant joins, add their audio and video to the DOM
+
+      const trackSubscribed = (track) => {
         participantDiv.appendChild(track.attach());
-      });
+      };
+      participant.on("trackSubscribed", trackSubscribed);
 
       participant.tracks.forEach((publication) => {
         if (publication.isSubscribed) {
-          trackSubscribed(div, publication.track);
+          trackSubscribed(publication.track);
         }
       });
+
       participantDiv.appendChild(mediaDiv);
       const mediaContainer = document.getElementById("video");
       mediaContainer.appendChild(participantDiv);
       document.body.appendChild(participantDiv);
+
+      const trackUnsubscribed = (track) => {
+        track.detach().forEach((element) => element.remove());
+      };
+
+      participant.on("trackUnsubscribed", trackUnsubscribed);
     };
 
-    // when a participant connects, remove their video and audio from the DOM.
-    function participantDisconnected(participant) {
+    // when a participant disconnects, remove their video and audio from the DOM.
+    function onParticipantDisconnected(participant) {
       const participantDiv = document.getElementById(participant.sid);
       participantDiv.parentNode.removeChild(participantDiv);
     }
-    async function onClick(event) {
+
+    async function onJoinButtonClick(event) {
       // do I need to worry about browser compat with "await"? bleh
       // or at least wrap this in a try catch
       const r = Math.floor(Math.random() * Math.floor(300)).toString();
@@ -66,10 +72,9 @@
 
       const Video = Twilio.Video;
 
-      const room = await Video.connect(token, {
+      room = await Video.connect(token, {
         name: "telemedicineAppointment",
       });
-      console.log("room", room);
 
       // display your own video element in DOM
       // localParticipants are handled differently
@@ -86,14 +91,25 @@
       // subscribe to new participant joining event so we can display their video/audio
       room.on("participantConnected", onParticipantConnected);
 
+      room.on("participantDisconnected", onParticipantDisconnected);
+
       // TODO:
-      // add ability to disconnect
+      // make the audio not be terrible
       // deal with button states
       // remove the join form, just made it a damn button
       event.preventDefault();
     }
 
-    const button = document.getElementById("join-button");
-    button.addEventListener("click", onClick);
+    function onLeaveButtonClick(event) {
+      room.disconnect();
+      const joinButton = document.getElementById("join-button");
+      // joinButton.classList.toggle('hidden');
+    }
+
+    const joinButton = document.getElementById("join-button");
+    joinButton.addEventListener("click", onJoinButtonClick);
+
+    const leaveButton = document.getElementById("leave-button");
+    leaveButton.addEventListener("click", onLeaveButtonClick);
   </script>
 </html>
