@@ -60,7 +60,7 @@
       // do I need to worry about browser compat with "await"? bleh
       // or at least wrap this in a try catch
       const r = Math.floor(Math.random() * Math.floor(300)).toString();
-      const response = await fetch("/token?identity=r");
+      const response = await fetch(`/token?identity=${r}`);
       const jsonResponse = await response.json();
       const token = jsonResponse.token;
 
