@@ -19,11 +19,7 @@
       const participantDiv = document.createElement("div");
       participantDiv.id = participant.sid;
 
-      const title = document.createElement("h6");
-      title.appendChild(document.createTextNode(participant.identity));
-      participantDiv.appendChild(title);
-
-      // when a participant joins, add their audio and video to the DOM
+      // when a remote participant joins, add their audio and video to the DOM
 
       const trackSubscribed = (track) => {
         participantDiv.appendChild(track.attach());
@@ -61,6 +57,9 @@
       const token = jsonResponse.token;
 
       const Video = Twilio.Video;
+
+      // do I need to create a local audio track too??
+      // probably
       const localTrack = await Video.createLocalVideoTrack();
       room = await Video.connect(token, {
         name: "telemedicineAppointment",
@@ -89,7 +88,6 @@
 
       // TODO:
       // make the audio not be terrible
-      // show the participant ID in a sensible way
       // add a button for previewing your audio and video?
       event.preventDefault();
     }
