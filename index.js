@@ -1,9 +1,6 @@
 /* TODO:
- - fire off some sort of event when the provider joins, so that we can also join the patient
- - what if the doctor is already in the room when patient joins? 
- - what if the room expires before anybody can join?
- - maybe using status callbacks? https://www.twilio.com/docs/video/api/status-callbacks#rooms-callback-events
- - implement some sort of soothing "waiting" experience
+ - allow the patient to join
+ - implement some sort of soothing "waiting" experience if the doctor is not already in the room
  - explore that templating API in vanilla JS to avoid duplicating HTML
  - clean up JS so that you're using consistent APIs for defining functions etc
 */

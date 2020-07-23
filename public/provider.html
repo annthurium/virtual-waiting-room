@@ -6,7 +6,8 @@
   </head>
 
   <body>
-    <h1>Welcome, Dr. Jareth</h1>
+    <h1>🦉 Welcome to Owl Hospital Telemedicine 🦉</h1>
+    <h3>Hi, Dr. Jareth</h3>
   </body>
   <button id="join-button">Join Room</button>
   <button id="leave-button" class="hidden">Leave Room</button>
@@ -53,10 +54,6 @@
       // or at least wrap this in a try catch
       const r = Math.floor(Math.random() * Math.floor(300)).toString();
 
-      // creating the room with the rest API so we can set up a server side event listener
-      // for status callbacks
-      // if you create a room that already exists...hmm, check on that...
-      await fetch("/create", { method: "POST" });
       const response = await fetch(`/token?identity=${r}`);
       const jsonResponse = await response.json();
       const token = jsonResponse.token;
