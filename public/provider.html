@@ -66,16 +66,15 @@
       const token = jsonResponse.token;
 
       const Video = Twilio.Video;
-
+      const localTrack = await Video.createLocalVideoTrack();
       room = await Video.connect(token, {
         name: "telemedicineAppointment",
+        tracks: [localTrack],
       });
 
       // display your own video element in DOM
       // localParticipants are handled differently
       // you don't need to fetch your own video/audio streams from the server
-      const localTrack = await Video.createLocalVideoTrack();
-      // room.localParticipant.publishTrack(localTrack);
       const localMediaContainer = document.getElementById(
         "local-media-container"
       );
@@ -96,24 +95,19 @@
       // TODO:
       // make the audio not be terrible
       // show the participant ID in a sensible way
-      // stop showing local audio and video if you disconnect
       // remove the join form, just made it a damn button
       // add a button for previewing your audio and video?
       event.preventDefault();
     }
 
     function onLeaveButtonClick(event) {
-      console.log("room", room);
-      room.localParticipant.tracks.forEach((track) => {
-        console.log(track);
-        // whyyyy is this throwing an error?
-        // I'm confused about the difference between `publish` and `attach`.
-        // `publish` lets remote participants subscribe to a track.
-        // but what does `attach` do? especially since you need to append it into the dom anyway.
-        // also, are you still supposed to show the local preview after you've joined the room?
-        // or is there some other way of showing you your own video?
-        const attachedElements = track.detach();
-        attachedElements.forEach((element) => element.remove());
+      room.localParticipant.tracks.forEach((publication) => {
+        const track = publication.track;
+        // stop releases the media element from the browser control
+        // which is useful to turn off the camera light, etc.
+        track.stop();
+        const elements = track.detach();
+        elements.forEach((element) => element.remove());
       });
       room.disconnect();
 
