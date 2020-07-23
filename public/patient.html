@@ -7,26 +7,23 @@
   <body>
     <h1>🦉 Welcome to Owl Hospital Telemedicine 🦉</h1>
   </body>
-  <div id="join-form">
-    <label for="user-name">Name: </label>
-    <input id="user-name" name="user-name" type="text"></input>
-    <button id="join-button">Join Room</button>
-  </div>
+  <button id="join-button">Join Room</button>
   <div id="waiting-room" class="hidden">
-      <p> Thanks! Your provider will be with you shortly.</p>
+    <p>Thanks! Your provider will be with you shortly.</p>
   </div>
   <script>
-      function onClick(event) {
-          // TODO: check if doctor is already in the room
-          const joinForm = document.getElementById("join-form");
-          joinForm.classList.toggle('hidden');
+    function onClick(event) {
+      // TODO:
+      // add code to join the room (refactor shared code out of provider.html)
+      // check if doctor is already in the room, and if not, show fish or something
+      // on the doctor side, check to see if the patient is in the room yet
 
-          const waitingRoom = document.getElementById("waiting-room");
-          waitingRoom.classList.toggle('hidden');
-          event.preventDefault();
-        }
+      const waitingRoom = document.getElementById("waiting-room");
+      waitingRoom.classList.toggle("hidden");
+      event.preventDefault();
+    }
 
-        const button = document.getElementById('join-button');
-        button.addEventListener('click', onClick);
+    const button = document.getElementById("join-button");
+    button.addEventListener("click", onClick);
   </script>
 </html>
