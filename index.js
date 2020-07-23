@@ -1,12 +1,14 @@
 /* TODO:
- - make it so that provider can join the video conference
  - fire off some sort of event when the provider joins, so that we can also join the patient
+ - what if the doctor is already in the room when patient joins? 
+ - what if the room expires before anybody can join?
  - maybe using status callbacks? https://www.twilio.com/docs/video/api/status-callbacks#rooms-callback-events
  - implement some sort of soothing "waiting" experience
  - explore that templating API in vanilla JS to avoid duplicating HTML
  - clean up JS so that you're using consistent APIs for defining functions etc
 */
 
+const bodyParser = require("body-parser");
 const http = require("http");
 const express = require("express");
 const path = require("path");
@@ -16,6 +18,7 @@ const twilio = require("twilio");
 const client = twilio();
 const AccessToken = require("twilio").jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
+const ROOM_NAME = "telemedicineAppointment";
 
 // Max. period that a Participant is allowed to be in a Room (currently 14400 seconds or 4 hours)
 // TODO: is this strictly necessary?
@@ -28,6 +31,24 @@ const providerPath = path.join(__dirname, "./public/provider.html");
 app.use("/provider", express.static(providerPath));
 
 app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.json());
+
+app.post("/create", function (request, response) {
+  client.video.rooms
+    .create({
+      statusCallback: "http://32bb77edb9ae.ngrok.io/status-callback",
+      type: "group",
+      uniqueName: ROOM_NAME,
+    })
+    .then((room) => console.log("room created", room.sid));
+  console.log("created a room");
+  response.sendStatus(200);
+});
+
+app.post("/status-callback", function (request, response) {
+  console.log("status-callback request", request.body);
+  response.sendStatus(200);
+});
 
 app.get("/token", function (request, response) {
   const identity = request.query.identity || "tilde";
@@ -47,7 +68,7 @@ app.get("/token", function (request, response) {
 
   // Grant the access token Twilio Video capabilities.
   // TODO: make this a const and import it?
-  const grant = new VideoGrant({ room: "telemedicineAppointment" });
+  const grant = new VideoGrant({ room: ROOM_NAME });
   token.addGrant(grant);
 
   // Serialize the token to a JWT string and include it in a JSON response.
