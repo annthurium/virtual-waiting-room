@@ -6,15 +6,10 @@
   </head>
 
   <body>
-    <!-- do I even want to hard code the doctor name? IDK -->
     <h1>Welcome, Dr. Jareth</h1>
   </body>
-  <div id="join-form">
-    <!-- <label for="user-name">Name: </label>
-    <input id="user-name" name="user-name" type="text"></input> -->
-    <button id="join-button">Join Room</button>
-    <button id="leave-button" class="hidden">Leave Room</button>
-  </div>
+  <button id="join-button">Join Room</button>
+  <button id="leave-button" class="hidden">Leave Room</button>
   <div id="local-media-container"></div>
   <div id="media-container"></div>
   <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
@@ -95,7 +90,6 @@
       // TODO:
       // make the audio not be terrible
       // show the participant ID in a sensible way
-      // remove the join form, just made it a damn button
       // add a button for previewing your audio and video?
       event.preventDefault();
     }
