@@ -8,14 +8,17 @@
     <h1>🦉 Welcome to Owl Hospital Telemedicine 🦉</h1>
   </body>
   <button id="join-button">Join Room</button>
+  <button id="leave-button" class="hidden">Leave Room</button>
   <div id="waiting-room" class="hidden">
     <p>Thanks! Your provider will be with you shortly.</p>
   </div>
+  <div id="local-media-container"></div>
+  <div id="media-container"></div>
   <script src="./index.js"></script>
+  <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
   <script>
     function onClick(event) {
       // TODO:
-      // add code to join the room (refactor shared code out of provider.html)
       // check if doctor is already in the room, and if not, show fish or something
       // on the doctor side, check to see if the patient is in the room yet
 
@@ -26,5 +29,10 @@
 
     const button = document.getElementById("join-button");
     button.addEventListener("click", onClick);
+    const joinButton = document.getElementById("join-button");
+    joinButton.addEventListener("click", onJoinButtonClick);
+
+    const leaveButton = document.getElementById("leave-button");
+    leaveButton.addEventListener("click", onLeaveButtonClick);
   </script>
 </html>
