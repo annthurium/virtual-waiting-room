@@ -27,7 +27,7 @@
 
         room.on("participantConnected", (participant) => {
           if (participant.identity === "provider") {
-            waitingRoom.innerText = "Your provider has disconnected.";
+            // todo: check the current state of things, here be bugs
             waitingRoom.classList.toggle("hidden");
           }
         });
@@ -35,13 +35,12 @@
 
       room.on("participantDisconnected", (participant) => {
         if (participant.identity === "provider") {
-          // todo: change the message text
+          waitingRoom.innerText = "Your provider has disconnected.";
           waitingRoom.classList.toggle("hidden");
         }
       });
       // TODO:
       // make this an IIFE
-      // on the doctor side, check to see if the patient is in the room yet
       event.preventDefault();
     }
 
