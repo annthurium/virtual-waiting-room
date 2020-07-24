@@ -18,23 +18,24 @@
   <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
   <script>
     async function onJoinButtonClick(event) {
+      const providerIdentity = "provider";
       await joinRoom(event, "patient");
       const waitingRoom = document.getElementById("waiting-room");
 
       // is there a doctor in the house??
       if (!isProviderPresent(room.participants)) {
         waitingRoom.classList.toggle("hidden");
-
-        room.on("participantConnected", (participant) => {
-          if (participant.identity === "provider") {
-            // todo: check the current state of things, here be bugs
-            waitingRoom.classList.toggle("hidden");
-          }
-        });
       }
 
+      room.on("participantConnected", (participant) => {
+        if (participant.identity === providerIdentity) {
+          // todo: check the current state of things, here be bugs
+          waitingRoom.classList.toggle("hidden");
+        }
+      });
+
       room.on("participantDisconnected", (participant) => {
-        if (participant.identity === "provider") {
+        if (participant.identity === providerIdentity) {
           waitingRoom.innerText = "Your provider has disconnected.";
           waitingRoom.classList.toggle("hidden");
         }
@@ -46,7 +47,7 @@
 
     isProviderPresent = (participantMap) => {
       for (const participant of participantMap.values()) {
-        if (participant.identity === "provider") {
+        if (participant.identity === providerIdentity) {
           return true;
         }
       }
