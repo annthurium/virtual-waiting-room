@@ -17,7 +17,9 @@
   <script src="./index.js"></script>
   <script>
     const joinButton = document.getElementById("join-button");
-    joinButton.addEventListener("click", onJoinButtonClick);
+    joinButton.addEventListener("click", async (event) => {
+      await joinRoom(event, "provider");
+    });
 
     const leaveButton = document.getElementById("leave-button");
     leaveButton.addEventListener("click", onLeaveButtonClick);

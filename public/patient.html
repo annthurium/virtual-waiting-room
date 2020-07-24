@@ -17,20 +17,45 @@
   <script src="./index.js"></script>
   <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
   <script>
-    function onClick(event) {
+    async function onJoinButtonClick(event) {
+      await joinRoom(event, "patient");
+
+      // is there a doctor in the house??
+      if (!isProviderPresent(room.participants)) {
+        const waitingRoom = document.getElementById("waiting-room");
+        waitingRoom.classList.toggle("hidden");
+
+        room.on("participantConnected", (participant) => {
+          if (participant.identity === "provider") {
+            waitingRoom.classList.toggle("hidden");
+          }
+        });
+      }
+      // do I want to handle multiple connections / disconnections???
+      room.on("participantDisconnected", (participant) => {
+        if (participant.identity === "provider") {
+          // todo: change the message text
+          waitingRoom.classList.toggle("hidden");
+        }
+      });
       // TODO:
+      // make this an IIFE
       // check if doctor is already in the room, and if not, show fish or something
       // on the doctor side, check to see if the patient is in the room yet
-
-      const waitingRoom = document.getElementById("waiting-room");
-      waitingRoom.classList.toggle("hidden");
       event.preventDefault();
     }
 
+    isProviderPresent = (participantMap) => {
+      for (const participant of participantMap.values()) {
+        if (participant.identity === "provider") {
+          return true;
+        }
+      }
+      return false;
+    };
+
     const button = document.getElementById("join-button");
-    button.addEventListener("click", onClick);
-    const joinButton = document.getElementById("join-button");
-    joinButton.addEventListener("click", onJoinButtonClick);
+    button.addEventListener("click", onJoinButtonClick);
 
     const leaveButton = document.getElementById("leave-button");
     leaveButton.addEventListener("click", onLeaveButtonClick);
