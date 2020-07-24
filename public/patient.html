@@ -19,19 +19,20 @@
   <script>
     async function onJoinButtonClick(event) {
       await joinRoom(event, "patient");
+      const waitingRoom = document.getElementById("waiting-room");
 
       // is there a doctor in the house??
       if (!isProviderPresent(room.participants)) {
-        const waitingRoom = document.getElementById("waiting-room");
         waitingRoom.classList.toggle("hidden");
 
         room.on("participantConnected", (participant) => {
           if (participant.identity === "provider") {
+            waitingRoom.innerText = "Your provider has disconnected.";
             waitingRoom.classList.toggle("hidden");
           }
         });
       }
-      // do I want to handle multiple connections / disconnections???
+
       room.on("participantDisconnected", (participant) => {
         if (participant.identity === "provider") {
           // todo: change the message text
@@ -40,7 +41,6 @@
       });
       // TODO:
       // make this an IIFE
-      // check if doctor is already in the room, and if not, show fish or something
       // on the doctor side, check to see if the patient is in the room yet
       event.preventDefault();
     }

@@ -36,10 +36,6 @@ const onParticipantConnected = (participant) => {
 // TODO: should the join function return the room? I hate mutable state
 // but vanilla JS seems to necessitate it
 const joinRoom = async (event, identity) => {
-  // todo: actually pass in a consistent identity
-  if (!identity) {
-    identity = Math.floor(Math.random() * Math.floor(300)).toString();
-  }
   // todo: wrap this in a try/catch
   const response = await fetch(`/token?identity=${identity}`);
   const jsonResponse = await response.json();
