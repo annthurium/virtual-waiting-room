@@ -17,29 +17,46 @@
   <script src="./index.js"></script>
   <script src="//media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
   <script>
+    // TODO:
+    // make sure the audio works!
+    const providerIdentity = "provider";
+
     async function onJoinButtonClick(event) {
-      const providerIdentity = "provider";
       await joinRoom(event, "patient");
       const waitingRoom = document.getElementById("waiting-room");
 
       // is there a doctor in the house??
-      if (!isProviderPresent(room.participants)) {
+      if (
+        !isProviderPresent(room.participants) &&
+        waitingRoom.classList.contains("hidden")
+      ) {
         waitingRoom.classList.toggle("hidden");
       }
 
+      // if the provider joins and the waiting room is visible, hide it
       room.on("participantConnected", (participant) => {
         if (participant.identity === providerIdentity) {
-          // todo: check the current state of things, here be bugs
-          waitingRoom.classList.toggle("hidden");
+          waitingRoom.classList.toggle(
+            "hidden",
+            !waitingRoom.classList.contains("hidden")
+          );
         }
       });
 
+      // if the provider disconnects and the waiting room is invisible, show it
       room.on("participantDisconnected", (participant) => {
-        if (participant.identity === providerIdentity) {
+        if (
+          participant.identity === providerIdentity &&
+          waitingRoom.classList.contains("hidden")
+        ) {
           waitingRoom.innerText = "Your provider has disconnected.";
           waitingRoom.classList.toggle("hidden");
         }
       });
+
+      // room.on("disconnected", () => {
+      //   waitingRoom.classList.toggle("hidden");
+      // });
       // TODO:
       // make this an IIFE
       event.preventDefault();
