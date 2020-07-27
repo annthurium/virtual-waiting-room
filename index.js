@@ -3,6 +3,8 @@
  - implement some sort of soothing "waiting" experience if the doctor is not already in the room
  - explore that templating API in vanilla JS to avoid duplicating HTML
  - clean up JS so that you're using consistent APIs for defining functions etc
+ - add a .env file to make it easy for other folks to put their credentials in
+ - pretty up the CSS a little??
 */
 
 const bodyParser = require("body-parser");

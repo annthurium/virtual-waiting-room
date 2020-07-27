@@ -11,6 +11,14 @@
   <button id="leave-button" class="hidden">Leave Room</button>
   <div id="waiting-room" class="hidden">
     <p>Thanks! Your provider will be with you shortly.</p>
+    <iframe
+      width="560"
+      height="315"
+      src="https://www.youtube.com/embed/E77jmtut1Zc"
+      frameborder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
   </div>
   <div id="local-media-container"></div>
   <div id="media-container"></div>
@@ -23,52 +31,69 @@
 
     async function onJoinButtonClick(event) {
       await joinRoom(event, "patient");
-      const waitingRoom = document.getElementById("waiting-room");
+      // const waitingRoom = document.getElementById("waiting-room");
 
       // is there a doctor in the house??
-      if (
-        !isProviderPresent(room.participants) &&
-        waitingRoom.classList.contains("hidden")
-      ) {
-        waitingRoom.classList.toggle("hidden");
+      // if not, show the waiting room
+      if (!isProviderPresent(room.participants)) {
+        showWaitingRoom();
       }
 
-      // if the provider joins and the waiting room is visible, hide it
+      // if the provider joins, hide the waiting room
       room.on("participantConnected", (participant) => {
         if (participant.identity === providerIdentity) {
-          waitingRoom.classList.toggle(
-            "hidden",
-            !waitingRoom.classList.contains("hidden")
-          );
+          hideWaitingRoom();
         }
       });
 
-      // if the provider disconnects and the waiting room is invisible, show it
-      room.on("participantDisconnected", (participant) => {
-        if (
-          participant.identity === providerIdentity &&
-          waitingRoom.classList.contains("hidden")
-        ) {
-          waitingRoom.innerText = "Your provider has disconnected.";
-          waitingRoom.classList.toggle("hidden");
-        }
+      // hide the waiting room if the patient disconnects
+      room.on("disconnected", () => {
+        hideWaitingRoom();
       });
 
-      // room.on("disconnected", () => {
-      //   waitingRoom.classList.toggle("hidden");
-      // });
       // TODO:
       // make this an IIFE
       event.preventDefault();
     }
 
-    isProviderPresent = (participantMap) => {
+    const isProviderPresent = (participantMap) => {
       for (const participant of participantMap.values()) {
         if (participant.identity === providerIdentity) {
           return true;
         }
       }
       return false;
+    };
+
+    const hideWaitingRoom = () => {
+      const waitingRoom = document.getElementById("waiting-room");
+      // check that the waiting room is visible, before hiding
+      // just to avoid weird state bugs
+      if (!waitingRoom.classList.contains("hidden")) {
+        waitingRoom.classList.toggle("hidden");
+        stopWaitingRoomVideo();
+      }
+    };
+
+    const showWaitingRoom = () => {
+      const waitingRoom = document.getElementById("waiting-room");
+      // check that the waiting room is hidden, before showing
+      // just to avoid weird state bugs
+      if (waitingRoom.classList.contains("hidden")) {
+        waitingRoom.classList.toggle("hidden");
+      }
+    };
+
+    const stopWaitingRoomVideo = () => {
+      const iframe = document.querySelector("iframe");
+      const video = document.querySelector("video");
+      if (iframe !== null) {
+        const iframeSrc = iframe.src;
+        iframe.src = iframeSrc;
+      }
+      if (video !== null) {
+        video.pause();
+      }
     };
 
     const button = document.getElementById("join-button");
