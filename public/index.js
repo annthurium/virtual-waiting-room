@@ -43,19 +43,22 @@ const joinRoom = async (event, identity) => {
 
   const Video = Twilio.Video;
 
-  // do I need to create a local audio track too??
-  // probably
-  const localTrack = await Video.createLocalVideoTrack();
+  const localTracks = await Video.createLocalTracks({
+    audio: true,
+    video: { width: 640 },
+  });
   room = await Video.connect(token, {
     name: "telemedicineAppointment",
-    tracks: [localTrack],
+    tracks: localTracks,
   });
 
   // display your own video element in DOM
   // localParticipants are handled differently
   // you don't need to fetch your own video/audio streams from the server
   const localMediaContainer = document.getElementById("local-media-container");
-  localMediaContainer.appendChild(localTrack.attach());
+  localTracks.forEach((localTrack) => {
+    localMediaContainer.appendChild(localTrack.attach());
+  });
 
   // display video/audio of other participants who have already joined
   room.participants.forEach(onParticipantConnected);
@@ -69,9 +72,6 @@ const joinRoom = async (event, identity) => {
   event.target.classList.toggle("hidden");
   document.getElementById("leave-button").classList.toggle("hidden");
 
-  // TODO:
-  // make the audio not be terrible
-  // add a button for previewing your audio and video?
   event.preventDefault();
 };
 
