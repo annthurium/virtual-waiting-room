@@ -1,7 +1,6 @@
 /* TODO:
  - explore that templating API in vanilla JS to avoid duplicating HTML
  - clean up JS so that you're using consistent APIs for defining functions etc
- - add a .env file to make it easy for other folks to put their credentials in
  - pretty up the CSS a little??
 */
 require("dotenv").config();
@@ -30,6 +29,9 @@ app.use("/provider", express.static(providerPath));
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
+
+// suppress missing favicon warning
+app.get("/favicon.ico", (req, res) => res.status(204));
 
 app.post("/create", function (request, response) {
   client.video.rooms
