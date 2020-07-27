@@ -4,7 +4,7 @@
  - add a .env file to make it easy for other folks to put their credentials in
  - pretty up the CSS a little??
 */
-
+require("dotenv").config();
 const bodyParser = require("body-parser");
 const http = require("http");
 const express = require("express");
@@ -15,6 +15,7 @@ const twilio = require("twilio");
 const client = twilio();
 const AccessToken = require("twilio").jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
+
 const ROOM_NAME = "telemedicineAppointment";
 
 // Max. period that a Participant is allowed to be in a Room (currently 14400 seconds or 4 hours)
