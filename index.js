@@ -1,6 +1,4 @@
 /* TODO:
- - allow the patient to join
- - implement some sort of soothing "waiting" experience if the doctor is not already in the room
  - explore that templating API in vanilla JS to avoid duplicating HTML
  - clean up JS so that you're using consistent APIs for defining functions etc
  - add a .env file to make it easy for other folks to put their credentials in
@@ -50,7 +48,7 @@ app.post("/status-callback", function (request, response) {
 });
 
 app.get("/token", function (request, response) {
-  const identity = request.query.identity || "tilde";
+  const identity = request.query.identity;
 
   // Create an access token which we will sign and return to the client,
   // containing the grant we just created.
