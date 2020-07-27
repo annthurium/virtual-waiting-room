@@ -4,7 +4,6 @@
  - pretty up the CSS a little??
 */
 require("dotenv").config();
-const bodyParser = require("body-parser");
 const http = require("http");
 const express = require("express");
 const path = require("path");
@@ -28,27 +27,9 @@ const providerPath = path.join(__dirname, "./public/provider.html");
 app.use("/provider", express.static(providerPath));
 
 app.use(express.static(__dirname + "/public"));
-app.use(bodyParser.json());
 
 // suppress missing favicon warning
 app.get("/favicon.ico", (req, res) => res.status(204));
-
-app.post("/create", function (request, response) {
-  client.video.rooms
-    .create({
-      statusCallback: "http://32bb77edb9ae.ngrok.io/status-callback",
-      type: "group",
-      uniqueName: ROOM_NAME,
-    })
-    .then((room) => console.log("room created", room.sid));
-  console.log("created a room");
-  response.sendStatus(200);
-});
-
-app.post("/status-callback", function (request, response) {
-  console.log("status-callback request", request.body);
-  response.sendStatus(200);
-});
 
 app.get("/token", function (request, response) {
   const identity = request.query.identity;
