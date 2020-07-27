@@ -68,9 +68,7 @@ const joinRoom = async (event, identity) => {
 
   room.on("participantDisconnected", onParticipantDisconnected);
 
-  // maybe make this a helper function?
-  event.target.classList.toggle("hidden");
-  document.getElementById("leave-button").classList.toggle("hidden");
+  toggleButtons();
 
   event.preventDefault();
 };
@@ -86,7 +84,10 @@ const onLeaveButtonClick = (event) => {
   });
   room.disconnect();
 
-  event.target.classList.toggle("hidden");
-  const joinButton = document.getElementById("join-button");
-  joinButton.classList.toggle("hidden");
+  toggleButtons();
+};
+
+const toggleButtons = () => {
+  document.getElementById("leave-button").classList.toggle("hidden");
+  document.getElementById("join-button").classList.toggle("hidden");
 };
