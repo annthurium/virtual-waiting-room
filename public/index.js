@@ -23,7 +23,6 @@ const onParticipantConnected = (participant) => {
     }
   });
 
-  const mediaContainer = document.getElementById("media-container");
   document.body.appendChild(participantDiv);
 
   const trackUnsubscribed = (track) => {
