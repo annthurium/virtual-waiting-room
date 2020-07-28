@@ -1,7 +1,3 @@
-/* TODO:
- - clean up JS so that you're using consistent APIs for defining functions etc
- - pretty up the CSS a little??
-*/
 require("dotenv").config();
 const http = require("http");
 const express = require("express");
