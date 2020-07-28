@@ -1,5 +1,4 @@
 /* TODO:
- - explore that templating API in vanilla JS to avoid duplicating HTML
  - clean up JS so that you're using consistent APIs for defining functions etc
  - pretty up the CSS a little??
 */
@@ -9,15 +8,12 @@ const express = require("express");
 const path = require("path");
 const app = express();
 
-const twilio = require("twilio");
-const client = twilio();
 const AccessToken = require("twilio").jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
 
 const ROOM_NAME = "telemedicineAppointment";
 
 // Max. period that a Participant is allowed to be in a Room (currently 14400 seconds or 4 hours)
-// TODO: is this strictly necessary?
 const MAX_ALLOWED_SESSION_DURATION = 14400;
 
 const patientPath = path.join(__dirname, "./public/patient.html");
@@ -48,7 +44,6 @@ app.get("/token", function (request, response) {
   token.identity = identity;
 
   // Grant the access token Twilio Video capabilities.
-  // TODO: make this a const and import it?
   const grant = new VideoGrant({ room: ROOM_NAME });
   token.addGrant(grant);
 

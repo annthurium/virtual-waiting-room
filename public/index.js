@@ -11,7 +11,6 @@ const onParticipantConnected = (participant) => {
   participantDiv.id = participant.sid;
 
   // when a remote participant joins, add their audio and video to the DOM
-
   const trackSubscribed = (track) => {
     participantDiv.appendChild(track.attach());
   };
@@ -32,8 +31,6 @@ const onParticipantConnected = (participant) => {
   participant.on("trackUnsubscribed", trackUnsubscribed);
 };
 
-// TODO: should the join function return the room? I hate mutable state
-// but vanilla JS seems to necessitate it
 const joinRoom = async (event, identity) => {
   // todo: wrap this in a try/catch
   const response = await fetch(`/token?identity=${identity}`);
