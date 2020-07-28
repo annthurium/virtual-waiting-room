@@ -1,5 +1,46 @@
 let room;
 
+const joinRoom = async (event, identity) => {
+  const response = await fetch(`/token?identity=${identity}`);
+  const jsonResponse = await response.json();
+  const token = jsonResponse.token;
+
+  const Video = Twilio.Video;
+
+  const localTracks = await Video.createLocalTracks({
+    audio: true,
+    video: { width: 640 },
+  });
+  try {
+    room = await Video.connect(token, {
+      name: "telemedicineAppointment",
+      tracks: localTracks,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  // display your own video element in DOM
+  // localParticipants are handled differently
+  // you don't need to fetch your own video/audio streams from the server
+  const localMediaContainer = document.getElementById("local-media-container");
+  localTracks.forEach((localTrack) => {
+    localMediaContainer.appendChild(localTrack.attach());
+  });
+
+  // display video/audio of other participants who have already joined
+  room.participants.forEach(onParticipantConnected);
+
+  // subscribe to new participant joining event so we can display their video/audio
+  room.on("participantConnected", onParticipantConnected);
+
+  room.on("participantDisconnected", onParticipantDisconnected);
+
+  toggleButtons();
+
+  event.preventDefault();
+};
+
 // when a participant disconnects, remove their video and audio from the DOM.
 const onParticipantDisconnected = (participant) => {
   const participantDiv = document.getElementById(participant.sid);
@@ -29,44 +70,6 @@ const onParticipantConnected = (participant) => {
   };
 
   participant.on("trackUnsubscribed", trackUnsubscribed);
-};
-
-const joinRoom = async (event, identity) => {
-  // todo: wrap this in a try/catch
-  const response = await fetch(`/token?identity=${identity}`);
-  const jsonResponse = await response.json();
-  const token = jsonResponse.token;
-
-  const Video = Twilio.Video;
-
-  const localTracks = await Video.createLocalTracks({
-    audio: true,
-    video: { width: 640 },
-  });
-  room = await Video.connect(token, {
-    name: "telemedicineAppointment",
-    tracks: localTracks,
-  });
-
-  // display your own video element in DOM
-  // localParticipants are handled differently
-  // you don't need to fetch your own video/audio streams from the server
-  const localMediaContainer = document.getElementById("local-media-container");
-  localTracks.forEach((localTrack) => {
-    localMediaContainer.appendChild(localTrack.attach());
-  });
-
-  // display video/audio of other participants who have already joined
-  room.participants.forEach(onParticipantConnected);
-
-  // subscribe to new participant joining event so we can display their video/audio
-  room.on("participantConnected", onParticipantConnected);
-
-  room.on("participantDisconnected", onParticipantDisconnected);
-
-  toggleButtons();
-
-  event.preventDefault();
 };
 
 const onLeaveButtonClick = (event) => {

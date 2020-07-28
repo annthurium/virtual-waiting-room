@@ -22,6 +22,7 @@ app.use("/patient", express.static(patientPath));
 const providerPath = path.join(__dirname, "./public/provider.html");
 app.use("/provider", express.static(providerPath));
 
+// serving up some fierce CSS lewks
 app.use(express.static(__dirname + "/public"));
 
 // suppress missing favicon warning
