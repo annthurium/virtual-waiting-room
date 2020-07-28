@@ -1,4 +1,4 @@
-# Twilio Video chat with React Hooks
+# Twilio Video virtual waiting rooom.
 
 This is an example video chat application built with [Twilio Video](https://www.twilio.com/docs/video), Express, and vanilla JavaScript.
 
