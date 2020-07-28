@@ -1,4 +1,4 @@
-# Twilio Video virtual waiting rooom.
+# Twilio Video virtual waiting room
 
 This is an example video chat application built with [Twilio Video](https://www.twilio.com/docs/video), Express, and vanilla JavaScript.
 
