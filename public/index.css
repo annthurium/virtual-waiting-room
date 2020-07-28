@@ -1,6 +1,19 @@
 * {
-  font-family: "Share Tech Mono", "Courier New", Courier, fixed-width;
+  background: #252d26;
+  color: #a1ceb6;
+  font-family: "Gill Sans", sans-serif;
 }
+
+button {
+  background: #6a7272;
+  font-size: 20px;
+  border-radius: 5px;
+}
+
+button:hover {
+  background: #694d3c;
+}
+
 .hidden {
   display: none;
 }
